@@ -19,13 +19,15 @@ internal_install_go() {
   sudo add-apt-repository ppa:longsleep/golang-backports
   sudo apt-get update
   sudo apt-get install golang-go -y
+  export GOPATH=$HOME/go
+  export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
   echo Go 1.11.1 has been installed.
   cd $WORK_DIR
 }
 
 internal_install_go-rupaya() {
   cd $HOME
-  git clone 'https://github.com/caelumdev/go-rupaya'
+  git clone 'https://github.com/rupayaproject/go-rupaya'
   cd $HOME/go-rupaya && make all
   sudo cp $HOME/go-rupaya/build/bin/rupaya /usr/local/bin
   sudo cp $HOME/go-rupaya/build/bin/bootnode /usr/local/bin

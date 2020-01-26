@@ -19,6 +19,9 @@
 
 ## Installation
 
+On a vanilla linux vps please run this command 
+`bash install-server.sh`
+
 Depending on your security level in your shell, the root password can be asked during the installation script to execute `sudo` commands during installation.
 
 `git clone https://github.com/rupayaproject/Apollo`
@@ -54,11 +57,10 @@ Run the apollo scipt by executing `bash apollo.sh` along with one of the followi
 
  Enter any key in your console to let the masternode run in the background.
 
- Check if you are displayed on our stats page https://stats.caelumfoundation.com/
+ Check if you are displayed on our stats page http://stats.rupaya.io
 
  Send our developers a DM to receive some testnet tokens in order to activate and setup your masternode.
 
- Subscribe to the Telegram channel for updates/instructions as masternode owner https://t.me/joinchat/AAAAAFankV-nfwLbBRbHMw
 
 ---
 
