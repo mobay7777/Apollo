@@ -109,6 +109,7 @@ run() {
     --unlock "$get_coinbase" --password ./.pwd \
     --ethstats "$NAME:universal-gas-lighter-refill@stats.rupaya.io" \
     --mine --store-reward --verbosity 3 >${DATADIR}/${NAME}/log.txt 2>&1 &
+    --syncmode full --gcmode archive
   process_id=$!
 
   sed -i "/PID/s/=.*/=${process_id}/" mainnet.env # Write process ID to config for logs
