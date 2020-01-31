@@ -10,7 +10,7 @@ include () {
     NODENAME=$REPLY
     sed -i "/NAME/s/=.*/=${NODENAME}/" mainnet.env # Append coinbase
     read -s -p "Please input a strong password to secure your account:"
-    echo $REPLY > .pwd # Save to .pwd file
+    echo "$REPLY" > .pwd # Save to .pwd file
   fi
   echo "Configuration file found"
   source mainnet.env
@@ -19,9 +19,9 @@ include () {
 include
 
 initGenesis() {
-  if [ ! -d ${DATADIR}/${NAME}/rupaya ]; then
+  if [ ! -d "${DATADIR}"/"${NAME}"/rupaya ]; then
     echo "No genesis found, creating genesis block..."
-    rupaya --datadir ${DATADIR}/${NAME} init ./config/chain/mainnet/main.json
+    rupaya --datadir "${DATADIR}"/"${NAME}" init ./config/chain/mainnet/main.json
     echo
     echo "${GREEN} Rupaya genesis file initialized ${NC}"
     echo
@@ -29,7 +29,7 @@ initGenesis() {
 }
 
 checkCoinbase() {
-  accounts=$(rupaya --datadir ${DATADIR}/${NAME} account list | awk -F'[{}]' '{print $2}')
+  accounts=$(rupaya --datadir "${DATADIR}"/"${NAME}" account list | awk -F'[{}]' '{print $2}')
   if [ -z "$accounts" ]
   then
     echo
@@ -43,8 +43,8 @@ checkCoinbase() {
     fi
   else
     echo "Account $accounts has been found"
-    accounts=$(rupaya --datadir ${DATADIR}/${NAME} account list | awk -F'[{}]' '{print $2}')
-    get_coinbase=$(echo $accounts | awk '{print $1;}')
+    accounts=$(rupaya --datadir "${DATADIR}"/"${NAME}" account list | awk -F'[{}]' '{print $2}')
+    get_coinbase=$(echo "$accounts" | awk '{print $1;}')
     sed -i "/COINBASE/s/=.*/=${get_coinbase}/" mainnet.env # Append coinbase
   fi
 }
@@ -56,37 +56,37 @@ import() {
     echo "Your private key seems too short. Please start again."
     exit
   else
-    echo $REPLY > .tmp
-    rupaya --datadir ${DATADIR}/${NAME} --password .pwd account import .tmp
+    echo "$REPLY" > .tmp
+    rupaya --datadir "${DATADIR}"/"${NAME}" --password .pwd account import .tmp
     rm .tmp
     echo
     echo "Private key successfully imported!"
     echo
-    accounts=$(rupaya --datadir ${DATADIR}/${NAME} account list | awk -F'[{}]' '{print $2}')
-    get_coinbase=$(echo $accounts | awk '{print $1;}')
+    accounts=$(rupaya --datadir "${DATADIR}"/"${NAME}" account list | awk -F'[{}]' '{print $2}')
+    get_coinbase=$(echo "$accounts" | awk '{print $1;}')
     sed -i "/COINBASE/s/=.*/=${get_coinbase}/" mainnet.env # Append coinbase
     echo "All accounts found in keystore: "
     echo
-    echo $accounts
+    echo "$accounts"
     echo
     echo "To remove all excess accounts, please remove them from ${DATADIR}${NAME}/keystore"
   fi
 }
 
 createNewAccount() {
-  rupaya --datadir ${DATADIR}/${NAME} --password .pwd account new
+  rupaya --datadir "${DATADIR}"/"${NAME}" --password .pwd account new
   echo
-  get_all_coinbases=$(rupaya --datadir ${DATADIR}/${NAME} account list | awk -F'[{}]' '{print $2}' )
-  get_coinbase=$(echo $get_all_coinbases | awk '{print $1;}')
+  get_all_coinbases=$(rupaya --datadir "${DATADIR}"/"${NAME}" account list | awk -F'[{}]' '{print $2}' )
+  get_coinbase=$(echo "$get_all_coinbases" | awk '{print $1;}')
   echo
-  echo Address created: $get_coinbase
+  echo Address created: "$get_coinbase"
   sed -i "/COINBASE/s/=.*/=${get_coinbase}/" mainnet.env # Append coinbase
 }
 
 stop() {
-  echo Stopping rupaya node ${PID}
-  kill -SIGINT ${PID}
-  echo Rupaya node ${PID} stopped.
+  echo Stopping rupaya node "${PID}"
+  kill -SIGINT "${PID}"
+  echo Rupaya node "${PID}" stopped.
 }
 
 force () {
@@ -97,21 +97,21 @@ force () {
 
 run() {
   # Use this for now.
-  get_all_coinbases=$(rupaya --datadir ${DATADIR}/${NAME} account list | awk -F'[{}]' '{print $2}' )
-  get_coinbase=$(echo $get_all_coinbases | awk '{print $1;}')
+  get_all_coinbases=$(rupaya --datadir "${DATADIR}"/"${NAME}" account list | awk -F'[{}]' '{print $2}' )
+  get_coinbase=$(echo "$get_all_coinbases" | awk '{print $1;}')
 
   rupaya \
     --syncmode "full" \
     --gcmode "archive" \
     --bootnodes "enode://daea23c08fc591109d1478543ed06fc714bd2b380c1eb4bc81e0d0e2ce75d900cfa8010fe127028366c4d8ff5e132246a6268a884152785946c4d13dccf2980e@206.189.18.217:30301" --syncmode "full" \
-    --datadir ${DATADIR}/${NAME} --networkid 308 --port $PORT \
+    --datadir "${DATADIR}"/"${NAME}" --networkid 308 --port "$PORT" \
     --announce-txs \
-    --identity"$NAME"
+    --identity "$NAME" \
     --rpc --rpccorsdomain "*" --rpcaddr 0.0.0.0 --rpcport 7050 --rpcvhosts "*" \
     --ws --wsaddr 0.0.0.0 --wsport 8050 --wsorigins "*" \
     --unlock "$get_coinbase" --password ./.pwd \
     --ethstats "$NAME:universal-gas-lighter-refill@stats.rupaya.io" \
-    --mine --store-reward --verbosity 3 >${DATADIR}/${NAME}/log.txt 2>&1 &
+    --mine --store-reward --verbosity 3 >"${DATADIR}"/"${NAME}"/log.txt 2>&1 &
     
   process_id=$!
 
@@ -125,7 +125,7 @@ update() {
 
 log() {
   echo Showing log file. Ctrl+C to exit
-  tail -f -n 2 ${DATADIR}/${NAME}/log.txt
+  tail -f -n 2 "${DATADIR}"/"${NAME}"/log.txt
 }
 
 clean() {
@@ -135,7 +135,7 @@ clean() {
     force
     mkdir -p ./Archive
     find ./networks/ -name "UTC*" -exec cp {} "./Archive/" \;
-    rm -rf ${DATADIR}
+    rm -rf "${DATADIR}"
   else
     echo "canceled by user."
     exit
