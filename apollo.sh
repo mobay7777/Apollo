@@ -106,12 +106,13 @@ run() {
     --bootnodes "enode://daea23c08fc591109d1478543ed06fc714bd2b380c1eb4bc81e0d0e2ce75d900cfa8010fe127028366c4d8ff5e132246a6268a884152785946c4d13dccf2980e@206.189.18.217:30301" --syncmode "full" \
     --datadir "${DATADIR}"/"${NAME}" --networkid 308 --port "$PORT" \
     --announce-txs \
+    --unlock "$get_coinbase" --password ./.pwd \
     --identity "$NAME" \
     --rpc --rpccorsdomain "*" --rpcaddr 0.0.0.0 --rpcport 7050 --rpcvhosts "*" \
     --ws --wsaddr 0.0.0.0 --wsport 8050 --wsorigins "*" \
-    --unlock "$get_coinbase" --password ./.pwd \
     --ethstats "$NAME:universal-gas-lighter-refill@stats.rupaya.io" \
-    --mine --store-reward --verbosity 3 >"${DATADIR}"/"${NAME}"/log.txt 2>&1 &
+    --mine --store-reward --verbosity 3 >"${DATADIR}"/log.txt 2>&1 &
+
     
   process_id=$!
 
